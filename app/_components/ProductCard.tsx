@@ -25,7 +25,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                     </p>
                     <p className="flex items-center hover:text-primary-main transition cursor-pointer gap-1 font-semibold">
                         <FaRegHeart className="text-lg/none" />
-                        Compare
+                        Like
                     </p>
                 </div>
             </div>

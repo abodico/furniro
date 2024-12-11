@@ -9,6 +9,12 @@ import Header from "./_components/Header"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import Footer from "./_components/Footer"
 import { ClerkProvider } from "@clerk/nextjs"
+import { CartContext } from "./_context/cartContext"
+import { AlertContext } from "./_context/alertContext"
+import { useEffect, useState } from "react"
+import Alert, { AlertProps } from "./_components/Alert"
+import { IsLoadingCartItemsContext } from "./_context/isLoadingCartItemsContext"
+import { usePathname } from "next/navigation"
 
 const metadata: Metadata = {
     title: "Create Next App",
@@ -22,23 +28,51 @@ export default function RootLayout({
 }: Readonly<{
     children: React.ReactNode
 }>) {
+    const pathname = usePathname()
+    const [cart, setCart] = useState<{
+        id: number | string
+        products: object[]
+        quantities: object
+    }>({
+        id: "",
+        products: [],
+        quantities: {},
+    })
+    const [alert, setAlert] = useState<AlertProps>({
+        title: "Are you sure you want to do that?",
+        text: "Doing that could have cause some issues elsewhere, are you 100% sure it's OK?",
+        onClick: () => {},
+        open: false,
+        alertType: "Confirmation",
+    })
+    const [isLoadingCartItems, setIsLoadingCartItems] = useState<boolean>(true)
+
     return (
         <ClerkProvider>
-            <html lang="en">
-                <body>
-                    <QueryClientProvider client={queryClient}>
-                        {!window.location.pathname.includes("sign-in") &&
-                            !window.location.pathname.includes("sign-up") && (
-                                <Header />
-                            )}
-                        {children}
-                        {!window.location.pathname.includes("sign-in") &&
-                            !window.location.pathname.includes("sign-up") && (
-                                <Footer />
-                            )}
-                    </QueryClientProvider>
-                </body>
-            </html>
+            <CartContext.Provider value={{ cart, setCart }}>
+                <AlertContext.Provider value={{ alert, setAlert }}>
+                    <IsLoadingCartItemsContext.Provider
+                        value={{ isLoadingCartItems, setIsLoadingCartItems }}
+                    >
+                        <html lang="en">
+                            <body className="relative">
+                                <QueryClientProvider client={queryClient}>
+                                    {!pathname.includes("sign-in") &&
+                                        !pathname.includes("sign-up") && (
+                                            <Header />
+                                        )}
+                                    <Alert />
+                                    {children}
+                                    {!pathname.includes("sign-in") &&
+                                        !pathname.includes("sign-up") && (
+                                            <Footer />
+                                        )}
+                                </QueryClientProvider>
+                            </body>
+                        </html>
+                    </IsLoadingCartItemsContext.Provider>
+                </AlertContext.Provider>
+            </CartContext.Provider>
         </ClerkProvider>
     )
 }

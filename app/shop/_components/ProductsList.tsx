@@ -174,7 +174,7 @@ const ProductsList = () => {
                 </div>
             </div>
             {!isLoading ? (
-                <>
+                <div className="container mx-auto">
                     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 pt-16 xl:px-24 md:px-12 px-8">
                         {data?.data.data.map((product: Product) => (
                             <ProductCard
@@ -222,7 +222,7 @@ const ProductsList = () => {
                             <BiChevronRight />
                         </li>
                     </ol>
-                </>
+                </div>
             ) : (
                 <CircularProgress />
             )}

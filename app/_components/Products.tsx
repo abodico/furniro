@@ -48,7 +48,10 @@ const Products = () => {
 
                 <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                     {products?.data.data.slice(0, 8).map((product: Product) => (
-                        <ProductCard product={product} />
+                        <ProductCard
+                            product={product}
+                            key={product.documentId}
+                        />
                     ))}
                 </ul>
                 <div className="flex justify-center mt-8">

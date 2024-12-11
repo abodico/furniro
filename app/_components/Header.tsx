@@ -1,10 +1,16 @@
 "use client"
 import Image from "next/image"
-import React from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { SignInButton, UserButton, useUser } from "@clerk/nextjs"
 import { FaRegHeart } from "react-icons/fa"
 import { FiShoppingCart } from "react-icons/fi"
 import { BiSearch } from "react-icons/bi"
+import Cart from "./Cart"
+import { CartContext } from "../_context/cartContext"
+import { useGetData } from "@/utils/useQueries"
+import axiosClient from "@/utils/axiosClient"
+import { AlertContext } from "../_context/alertContext"
+import { IsLoadingCartItemsContext } from "../_context/isLoadingCartItemsContext"
 
 const tabs = [
     { title: "Home", link: "/" },
@@ -14,6 +20,38 @@ const tabs = [
 ]
 const Header = () => {
     const user = useUser()
+    const [OpenCart, setOpenCart] = useState(false)
+    const [fetchCartItems, setFetchCartItems] = useState(false)
+    const { cart, setCart } = useContext(CartContext)
+    const { isLoadingCartItems, setIsLoadingCartItems } = useContext(
+        IsLoadingCartItemsContext
+    )
+
+    const { data: cartItems, isLoading } = useGetData(
+        `/carts?populate[products][populate]=image&filters[email][$eq]=${user?.user?.primaryEmailAddress?.emailAddress}`,
+        fetchCartItems
+    )
+
+    // updating isLoadingCartItems context ..
+    useEffect(() => {
+        setIsLoadingCartItems(isLoading)
+    }, [isLoading])
+
+    useEffect(() => {
+        if (user.isSignedIn) {
+            setFetchCartItems(true)
+        }
+    }, [user])
+
+    useEffect(() => {
+        setCart({
+            id: cartItems?.data.data[0]?.documentId ?? "",
+            products: cartItems?.data.data[0]?.products ?? [],
+            quantities: cartItems?.data.data[0]?.quantities ?? {},
+        })
+    }, [cartItems])
+
+    const toggleCart = () => setOpenCart((prev) => !prev)
     return (
         user && (
             <header className="bg-white">
@@ -49,19 +87,52 @@ const Header = () => {
                             </nav>
                         </div>
 
-                        <div className="flex items-center gap-4">
-                            {user ? (
+                        <div className="flex items-center gap-3 relative,">
+                            {user.isSignedIn ? (
                                 <>
-                                    <BiSearch className="text-xl/none" />
-                                    <FaRegHeart />
-                                    <FiShoppingCart />
+                                    <button className="size-8 rounded-full hover:bg-fcf transition">
+                                        <BiSearch className="text-xl mx-auto" />
+                                    </button>
+                                    <button className="size-8 rounded-full hover:bg-fcf transition">
+                                        <FaRegHeart className="mx-auto" />
+                                    </button>
+                                    <div className="flex items-center">
+                                        <button
+                                            onClick={toggleCart}
+                                            className="size-8 rounded-full hover:bg-fcf transition"
+                                        >
+                                            <FiShoppingCart className="mx-auto" />
+                                        </button>
+                                        (
+                                        {Number(
+                                            Object.values(
+                                                cart.quantities
+                                            ).reduce(
+                                                (
+                                                    accumulator: number,
+                                                    currentValue
+                                                ) =>
+                                                    accumulator +
+                                                    Number(currentValue),
+                                                0
+                                            )
+                                        )}
+                                        )
+                                    </div>
+                                    {OpenCart && (
+                                        <div className="fixed w-[100dvw] h-[100dvh] top-0 left-0 bg-black/10 z-20">
+                                            <div className=" bg-red-500 fixed top-[calc(100%+12px)], top-16 right-0 z-30">
+                                                <Cart toggleCart={toggleCart} />
+                                            </div>
+                                        </div>
+                                    )}
                                     <UserButton />
                                 </>
                             ) : (
                                 <div className="sm:flex sm:gap-4">
-                                    <button className="inline-block rounded-md bg-primary-main px-5 py-2.5 text-base font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none active:bg-primary-light">
+                                    <div className="inline-block rounded-md bg-primary-main px-5 py-2.5 text-base font-medium text-white transition hover:scale-110 hover:shadow-xl focus:outline-none active:bg-primary-light">
                                         <SignInButton />
-                                    </button>
+                                    </div>
 
                                     <div className="hidden sm:flex">
                                         <a

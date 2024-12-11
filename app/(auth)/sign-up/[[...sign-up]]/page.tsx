@@ -1,4 +1,4 @@
-import { SignIn, SignUp } from "@clerk/nextjs"
+import { SignUp } from "@clerk/nextjs"
 import Image from "next/image"
 
 export default function Page() {
@@ -57,7 +57,7 @@ export default function Page() {
                             </p>
                         </div>
                         <div className="mx-auto w-fit">
-                            <SignIn />
+                            <SignUp />
                         </div>
                     </div>
                 </main>

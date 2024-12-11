@@ -48,7 +48,7 @@ const Inspiration = () => {
                     // onSlideChange={() => console.log("slide change")}
                 >
                     {slides.map((item, index) => (
-                        <SwiperSlide>
+                        <SwiperSlide key={index}>
                             <Image
                                 src={item}
                                 alt="img"
