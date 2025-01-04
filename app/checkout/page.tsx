@@ -10,6 +10,7 @@ import CircularProgress from "../_components/CircularProgress"
 import { useStripe, useElements, PaymentElement } from "@stripe/react-stripe-js"
 import Features from "../shop/_components/Features"
 import { useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHER_KEY!)
 
@@ -18,7 +19,8 @@ interface StripeOptions {
     currency: "usd"
     amount: number
 }
-const Checkout = () => {
+const Checkout = () => {}
+const Suspensed = () => {
     const searchParams = useSearchParams()
     const options: StripeOptions = {
         mode: "payment",
@@ -30,7 +32,7 @@ const Checkout = () => {
     const { isLoadingCartItems } = useContext(IsLoadingCartItemsContext)
 
     return (
-        <>
+        <Suspense>
             <div className="container mx-auto px-2 flex gap-6 pt-24 pb-20">
                 <div className="px-20 w-1/2">
                     <h2 className="font-semibold text-4xl mb-9">
@@ -148,7 +150,7 @@ const Checkout = () => {
                 </div>
             </div>
             <Features />
-        </>
+        </Suspense>
     )
 }
 
