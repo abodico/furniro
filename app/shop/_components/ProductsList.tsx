@@ -142,9 +142,15 @@ const ProductsList = () => {
                         )}
 
                         <p className="">
-                            {(data?.data.meta.pagination.page - 1) *
-                                data?.data.meta.pagination.pageSize +
-                                1}
+                            {!!(
+                                (data?.data.meta.pagination.page - 1) *
+                                    data?.data.meta.pagination.pageSize +
+                                1
+                            )
+                                ? (data?.data.meta.pagination.page - 1) *
+                                      data?.data.meta.pagination.pageSize +
+                                  1
+                                : 0}
                             -
                             {data?.data.meta.pagination.page *
                                 data?.data.meta.pagination.pageSize <

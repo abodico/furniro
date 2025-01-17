@@ -5,6 +5,31 @@ import { FaRegHeart } from "react-icons/fa"
 import { MdCompareArrows, MdShare } from "react-icons/md"
 import ProductCard from "./ProductCard"
 
+interface Details {
+    general: {
+        salesPackage: string
+        modelNumber: string
+        secondaryMaterial: string
+        configuration: string
+        upholsteryMaterial: string
+        upholsteryColor: string
+    }
+    product: {
+        fillingMaterial: string
+        finishType: string
+        adjustableHeadrest: string
+        maximumLoadCapacity: string
+        originOfManufature: string
+    }
+    dimensions: {
+        width: string
+        height: string
+        depth: string
+        weight: string
+        seatHeight: string
+        legHeight: string
+    }
+}
 export interface Product {
     createdAt: string
     description: string
@@ -21,6 +46,7 @@ export interface Product {
     publishedAt: string
     title: string
     updatedAt: string
+    details: Details
 }
 const Products = () => {
     const { data: products } = useGetData("/products?populate=*")
