@@ -19,7 +19,13 @@ interface StripeOptions {
     currency: "usd"
     amount: number
 }
-const Checkout = () => {}
+const Checkout = () => {
+    return (
+        <>
+            <Suspensed />
+        </>
+    )
+}
 const Suspensed = () => {
     const searchParams = useSearchParams()
     const options: StripeOptions = {
