@@ -21,9 +21,9 @@ interface StripeOptions {
 }
 const Checkout = () => {
     return (
-        <>
+        <Suspense>
             <Suspensed />
-        </>
+        </Suspense>
     )
 }
 const Suspensed = () => {
@@ -38,7 +38,7 @@ const Suspensed = () => {
     const { isLoadingCartItems } = useContext(IsLoadingCartItemsContext)
 
     return (
-        <Suspense>
+        <>
             <div className="container mx-auto px-2 flex gap-6 pt-24 pb-20">
                 <div className="px-20 w-1/2">
                     <h2 className="font-semibold text-4xl mb-9">
@@ -156,7 +156,7 @@ const Suspensed = () => {
                 </div>
             </div>
             <Features />
-        </Suspense>
+        </>
     )
 }
 
